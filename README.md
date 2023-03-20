@@ -142,3 +142,25 @@ Then delete the method call from  `DialogueEditorDetails.cpp` in the method `Try
  `soundName = SplitFilename(*soundName);` - delete this
  
  
+### CleanString
+This method takes the text from your node and cleans it up removing anything that won't work in a file path. E.g. spaces.
+
+It also has an optional parameter of maxCharacters. In order to restrict how much it has to query, while it builds up the cleaned string, it will return the max length. Typically, having a huge file names is a bad thing as it will cause issues cross OSs. You can set this max length to anything you want to suit your project. 25 is typically a good balance between dialogue.
+
+This is talored to xVaVoiceSynth as best as I could guess. All it needs to do is take in the string and a max character (pass 0 to return the full thing) and attempt to replace any characters to make the dialogue meet your file naming convention.
+e.g.
+
+```
+Hello and welcome to this years Mortal Kombat tournament! We hope you enjoy. At least we hope you do?
+```
+
+Would become:
+
+```
+Hello_and_welcome_to_this_years_Mortal_Kombat_tournament__We_hope_you_enjoy__At_least_we_hope_you_do_
+```
+or with max length of 25:
+
+```
+Hello_and_welcome_to_thi
+```
