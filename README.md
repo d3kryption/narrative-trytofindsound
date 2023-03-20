@@ -164,3 +164,45 @@ or with max length of 25:
 ```
 Hello_and_welcome_to_thi
 ```
+
+### Speaker ID path
+One of the steps this mod takes to help speed up and return accurate dialogue, is it uses the Speaker ID of your node (Player is used for Player nodes)
+and checks if the path of the sound contains the speaker id (stripped of spaces and such).
+
+For example
+A path of:
+
+```
+/Game/Sounds/hello_and_welcome_to_my_game.wav
+```
+
+would not work.
+
+It would have to have the Speaker id in the folder structure:
+
+```
+/Game/Sounds/SPEAKER_ID/hello_and_welcome_to_my_game.wav
+```
+```
+/Game/Sounds/Player/hello_and_welcome_to_my_game.wav
+```
+
+If you do not want this feature, you can modify the line:
+
+```cpp
+if (sound != nullptr && SoundPath.Contains(*cleanSpeakerID))
+```
+
+To instead be:
+
+```cpp
+if (sound != nullptr)
+```
+
+and remove the line:
+
+```cpp
+FString SoundPath = asset->GetPathName();
+```
+
+Just above it.
