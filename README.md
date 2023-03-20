@@ -3,7 +3,11 @@ This is a mod for Narrative (by Reubs) that adds a button to the dialogue node d
 
 ## Why?
 
-I use an AI generator and/or name my sound files with a specific format. As long as you stick to whatever format, this plugin will remove the entire searching part and will find the file instantly.
+I regualrly make big dialogues for my games. Its bloody annoying to have to find all the sounds to match the nodes lol 
+
+So this button is a 1 click macro to do it.
+
+It might not sound much but when you are looking at 50+ nodes you need to add sounds to, this button is fantastic.
 
 ## Example
 In these two examples you can see the before and after. The before being manually searching for files and the after is simply clicking the button. 
@@ -20,92 +24,77 @@ This is not really a warning. If you've never touched C++ before don't worry. Th
 
 Even if you add this mod and it breaks your Narrative, just redownload it and it'll all be gone. I'm always happy for you to contact me if you need help.
 
+But. And sorry there always has to be a but. If you have made changes yourself to the Narrative code or the Narrative UI BACK IT UP. If this goes badly wrong. You can loose all your changes when you redownload it. INCLUDING THE UI.
+
+Back it up. Please.
+
 ## 🧐 Features
 
-- Customisable to your naming convention
+- Customisable to your naming convention - pick your style
 - Quick - it contains a few checks to try and speed up the search
-- If you have Narrative working, this mod will work for you. 
-- The button hides if the dialogue already has been populated (you can remove this if you don't want this aspect)
+- If you have Narrative working, this mod will work for you and you will love it.
+- The button hides if the dialogue already has been populated (you can remove this if you don't want this aspect, I show this during installation)
 
 ## Limitations
-- You need to own Narrative. If you don't this is useless to you.
-- C++ - it requires you to edit the C++. Its dead easy however!
+- You need to own Narrative. If you don't this is useless to you - sorry but...how did you get here lol
+- C++ - it requires you to edit the C++. Its dead easy however. I try to make the process super easy!
 - I'm not a C++ programmer. I'm still learning. If you spot anything wrong please update / let me know :D
-- Its not perfect. Sometimes it might not find a file (if it doesn't match) or you might not have named a file correctly so it won't work 100% but 95% is better than none right?
+- Its not perfect. Sometimes it might not find a file (if it doesn't match via some logic flaw) or you might not have named a file correctly so it won't work 100% but 95% is better than none right?
 - When you click the button and it populates, it won't hide the button until you click off and back on. Never figured out how to solve that lol
+- When Narrative releases an update, sadly you will have to reapply this. It only takes 5 minutes once you've done it a few times.
 
-## How it works
+## How it works - top level
 
 
-## 🛠️ Installation Steps - development
+## 🛠️ Installation Steps
 
 I cannot distrobute Narrative as its a licenced product created by Reubs, but with his permission, I have posted the modifications only here so you can make the changes you need.
 
-### File 1 - `Source/NarrativeDialogueEditor/Private/DialogueEditorDetails.h`
+Now you need to pick your "style".
 
-1) Open the file `DialogueEditorDetails.h` from this repo and copy the 4 lines from the file `DialogueEditorDetails.h` into your Narrative `DialogueEditorDetails.h` file. 
+A style in this guide, is refered to as how you orginises your files.
 
-paste it above the final bracket and semicolon.
+If you stick every single sound from your entire game into `/Game/Sounds/` - please change it :P 
 
-![image](https://user-images.githubusercontent.com/48034534/226450601-b8ac6327-c727-4bf4-a424-02aa51edb600.png)
+If you can't find your style in here and you can logically explain it, I can try and help set you up but you'll need to explain it. 
 
+`I randomly pick what I replace each character with and I change between naming it the npcs name and text to random guids that have nothing to do with the text` - sorry I can't help :P
 
-### File 2 - `Source/NarrativeDialogueEditor/Private/DialogueEditorDetails.cpp`
-
-1) Open the file `DialogueEditorDetails-Methods.cpp` from this repo and copy the 4 methods.
-
-Open the Narrative file `DialogueEditorDetails.cpp` and paste the 4 methods at the very bottom. Just above the line 
-```cpp
-#undef LOCTEXT_NAMESPACE
+### Style 1 - xVASynth v2
+If you use xVASynth v2 and use its default exporting style:
+```
+/Game/Sounds/aivoice/ai_codec_text
 ```
 
-![image](https://user-images.githubusercontent.com/48034534/226450506-afa2abe7-cfb8-4d49-b40d-f0bffaf11f6f.png)
+e.g.
 
-
-2) In the file `DialogueEditorDetails-NPC.cpp` on this repo, copy the 3 lines.
-
-Open the Narrative file `DialogueEditorDetails.cpp` and find the method `FDialogueEditorDetails::CustomizeDetails`.
-
-This method is used to customise the details panel to add buttons etc...
-
-Scroll to the bottom of this function (around line 129 as per the time of writing) you will see it adds a button with the text being `.Text(this, &FDialogueEditorDetails::GetSpeakerText)`.
-
-Under this line, paste the if statement. 
-
-![image](https://user-images.githubusercontent.com/48034534/226450701-d4c386e2-3b92-45db-9b13-8d805eac0e8c.png)
-
-NOTE: If you want the button to be visible 100% of the time and not hidden when you already have dialogue, then remove the if statement and the brackets. Just add the below line instead.
-
-```cpp
-AddTryToFindSoundButton(DetailLayout);
+```
+/Game/Sounds/GeneralButtlicker/duke_nukem_hifi_You_stole_from_the_wrong_person__Time_to_die
 ```
 
-![image](https://user-images.githubusercontent.com/48034534/226450768-5b25a5db-3101-48a9-862b-b578e3954bfe.png)
+Then pick this style. Download this repo and go into the `xVASynth-v2-style` folder and follow the steps in the README.md (open in notepad or anything)
+
+### Style 2 - NPCName/text
+If you create a folder per NPC and set the sounds filename to be a stripped version of the text, this style is for you.
+```
+/Game/Sounds/aivoice/text
+```
+
+e.g.
+
+```
+/Game/Sounds/GeneralButtlicker/You_stole_from_the_wrong_person_Time_to_die
+```
+
+Then pick this style. Download this repo and go into the `npcname_text-style` folder and follow the steps in the README.md (open in notepad or anything)
 
 
-3) In the file `DialogueEditorDetails-PLAYER.cpp` on this repo, copy all the lines - there is quite a few don't worry. It just copies the NPC code above but modified for the player.
+### Help with new style
 
-Under the if statement or code you pasted in step 2, there should be roughly 5 brackets.
-
-Paste the code in between the 3rd ending bracket and the fourth. Making sure there are two ending brackets below, and 3 above your code.
-
-NOTE: If you removed the if statement above, you will need to do it in this section of code too. Just look for `if(!PlayerNode->DialogueSound)`
-Remove this if statemnt, the opening bracket under it, then the bracket under the `AddTryToFindSoundButton(DetailLayout);`
-
-If done correctly, the code should look like so WITH IF STATEMENT:
-![image](https://user-images.githubusercontent.com/48034534/226450377-cbbfd79e-c7f7-4ed6-9bf8-bb2a5500d36b.png)
-
-WITHOUT IF STATEMENT:
-![image](https://user-images.githubusercontent.com/48034534/226451108-73d8bf7f-d7b5-4ab5-b381-ba9b0b403ef2.png)
-
-## Customisation steps
-
-As stated above, this mod is specific to using xVAVoiceSynth exports so you need to modify it to make it work for you. But I've tried to make it as easy as possible.
-
-There is normally, 2 methods that you will need to edit.
+If the styles above don't work for your needs and you can logically explain your orginisation then download the style that looks as close to yours then modify it.
 
 ### SplitFilename
-The export convention for xVaVoiceSynth by default is:
+The export convention for xVASynth by default is:
 
 ```
 ai_name_codec_text
@@ -133,13 +122,7 @@ will become
 You_stole_from_the_wrong_person__Time_to_die
 ```
 
-If you don't need to split on anything, you can remove this method entirely.
-
-Delete the method from `DialogueEditorDetails.cpp` and `DialogueEditorDetails.h`.
-
-Then delete the method call from  `DialogueEditorDetails.cpp` in the method `TryToFindSound` around line 244.
-
- `soundName = SplitFilename(*soundName);` - delete this
+If all your sounds start with something, maybe the speaker ID, maybe some emotion type, anything, and you can split on it, try to adapt this method and its call.
  
  
 ### CleanString
@@ -147,8 +130,7 @@ This method takes the text from your node and cleans it up removing anything tha
 
 It also has an optional parameter of maxCharacters. In order to restrict how much it has to query, while it builds up the cleaned string, it will return the max length. Typically, having a huge file names is a bad thing as it will cause issues cross OSs. You can set this max length to anything you want to suit your project. 25 is typically a good balance between dialogue.
 
-This is talored to xVaVoiceSynth as best as I could guess. All it needs to do is take in the string and a max character (pass 0 to return the full thing) and attempt to replace any characters to make the dialogue meet your file naming convention.
-e.g.
+This will entirely depend on how you name your files. In my case, I built it using xVASynth and tried to cater for thats random underscore additions lol
 
 ```
 Hello and welcome to this years Mortal Kombat tournament! We hope you enjoy. At least we hope you do?
@@ -164,6 +146,8 @@ or with max length of 25:
 ```
 Hello_and_welcome_to_thi
 ```
+
+But its just as easy to edit to remove all non [a-z] characters and replace spaces with underscores.
 
 ### Speaker ID path
 One of the steps this mod takes to help speed up and return accurate dialogue, is it uses the Speaker ID of your node (Player is used for Player nodes)
