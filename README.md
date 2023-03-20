@@ -34,6 +34,9 @@ Even if you add this mod and it breaks your Narrative, just redownload it and it
 - Its not perfect. Sometimes it might not find a file (if it doesn't match) or you might not have named a file correctly so it won't work 100% but 95% is better than none right?
 - When you click the button and it populates, it won't hide the button until you click off and back on. Never figured out how to solve that lol
 
+## How it works
+
+
 ## 🛠️ Installation Steps - development
 
 I cannot distrobute Narrative as its a licenced product created by Reubs, but with his permission, I have posted the modifications only here so you can make the changes you need.
@@ -95,3 +98,47 @@ If done correctly, the code should look like so WITH IF STATEMENT:
 WITHOUT IF STATEMENT:
 ![image](https://user-images.githubusercontent.com/48034534/226451108-73d8bf7f-d7b5-4ab5-b381-ba9b0b403ef2.png)
 
+## Customisation steps
+
+As stated above, this mod is specific to using xVAVoiceSynth exports so you need to modify it to make it work for you. But I've tried to make it as easy as possible.
+
+There is normally, 2 methods that you will need to edit.
+
+### SplitFilename
+The export convention for xVaVoiceSynth by default is:
+
+```
+ai_name_codec_text
+```
+
+E.g.
+
+```
+duke_nukem_hifi_You_stole_from_the_wrong_person__Time_to_die
+```
+
+This method splits on `hifi_` and keeps the text.
+
+If you begin any of your sound files with a naming convention, modify this to split on it so only the text exists.
+
+e.g.
+
+```
+duke_nukem_hifi_You_stole_from_the_wrong_person__Time_to_die
+```
+
+will become
+
+```
+You_stole_from_the_wrong_person__Time_to_die
+```
+
+If you don't need to split on anything, you can remove this method entirely.
+
+Delete the method from `DialogueEditorDetails.cpp` and `DialogueEditorDetails.h`.
+
+Then delete the method call from  `DialogueEditorDetails.cpp` in the method `TryToFindSound` around line 244.
+
+ `soundName = SplitFilename(*soundName);` - delete this
+ 
+ 
