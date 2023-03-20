@@ -1,5 +1,5 @@
 # Intro
-This section is for users whos style fits the below:
+This section is for users whose style fits the below:
 
 ```
 /Game/Sounds/aivoice/text
@@ -11,9 +11,9 @@ e.g.
 /Game/Sounds/GeneralButtlicker/You_stole_from_the_wrong_person_Time_to_die
 ```
 
-It will assume that all non normal characters / numbers have been replaced. [A-Z] [a-z] [0-9] and [_]. No commas, no spaces, only characters, numbers and underscores for spaces.
+It will assume that all non-normal characters/numbers have been replaced. [A-Z] [a-z] [0-9] and [_]. No commas, no spaces, only characters, numbers and underscores for spaces.
 
-The exact folder path is required to make this work. - you can have sub folders however.
+The exact folder path is required to make this work. - you can have sub folders, however.
 
 ```
 /Game/Sounds/GeneralButtlicker/Stage1/Mission1/Objective/You_stole_from_the_wrong_person_Time_to_die
@@ -23,7 +23,7 @@ _should_ be okay.
 
 ## 🛠️ Installation Steps
 
-I cannot distrobute Narrative as its a licenced product created by Reubs, but with his permission, I have posted the modifications only here so you can make the changes you need.
+I cannot distribute Narrative as it's a licenced product created by Reubs, but with his permission, I have posted the modifications only here so you can make the changes you need.
 
 ### File 1 - `Source/NarrativeDialogueEditor/Private/DialogueEditorDetails.h`
 
@@ -63,13 +63,13 @@ AddTryToFindSoundButton(DetailLayout);
 ![image](https://user-images.githubusercontent.com/48034534/226450768-5b25a5db-3101-48a9-862b-b578e3954bfe.png)
 
 
-3) In the file `DialogueEditorDetails-PLAYER.cpp` on this repo, copy all the lines - there is quite a few don't worry. It just copies the NPC code above but modified for the player.
+3) In the file `DialogueEditorDetails-PLAYER.cpp` on this repo, copy all the lines - there is quite a few don't worry. It just copies the NPC code above but is modified for the player.
 
 Under the if statement or code you pasted in step 2, there should be roughly 5 brackets.
 
 Paste the code in between the 3rd ending bracket and the fourth. Making sure there are two ending brackets below, and 3 above your code.
 
 NOTE: If you removed the if statement above, you will need to do it in this section of code too. Just look for `if(!PlayerNode->DialogueSound)`
-Remove this if statemnt, the opening bracket under it, then the bracket under the `AddTryToFindSoundButton(DetailLayout);`
+Remove this if statement, the opening bracket under it, then the bracket under the `AddTryToFindSoundButton(DetailLayout);`
 
 Just above it.
