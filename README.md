@@ -1,5 +1,5 @@
 # Narrative - Try to find sound button
-This is a mod for Narrative (by Reubs) that adds a button to the dialogue node details panel that when clicked, will get the text of the selected node, and strips any characters to make it file path accessible (?, ., !, -, _), then tries to find the file similarly named within /Game/Sounds.
+This is a mod for Narrative (by Reubs) that adds a button to the dialogue node details panel that when clicked, will get the text of the selected node, and strips any non alphanum character, then tries to find the file similarly named within /Game/Sounds.
 
 ## Why?
 
@@ -12,10 +12,12 @@ It might not sound much but when you are looking at 50+ nodes you need to add so
 ## Example
 In these two examples, you can see the before and after. The before is manually searching for files and the after is simply clicking the button. 
 
+![YouTube - before and after](https://youtu.be/Szz77n-nG4M)
+
 Before:
 ![narrative_mod_before](https://user-images.githubusercontent.com/48034534/226448774-d0b469e7-c09d-4cf7-b29b-8a8497361e41.gif)
 
-After - as you can see it's super quick:
+After - as you can see it's super quick in comparison:
 ![narrative_mod_after](https://user-images.githubusercontent.com/48034534/226448814-375f04ab-6e7f-4396-afc3-c3ce27ad668b.gif)
 
 
@@ -30,7 +32,7 @@ Back it up. Please.
 
 ## 🧐 Features
 
-- Customisable to your naming convention - pick your style
+- Customisable to your naming convention - pick your style or make your own to match your standards
 - Quick - it contains a few checks to try and speed up the search
 - If you have Narrative working, this mod will work for you and you will love it.
 - The button hides if the dialogue already has been populated (you can remove this if you don't want this aspect, I show this during installation)
@@ -40,8 +42,11 @@ Back it up. Please.
 - C++ - it requires you to edit the C++. It's dead easy, however. I try to make the process super easy!
 - I'm not a C++ programmer. I'm still learning. If you spot anything wrong please update/let me know :D
 - It's not perfect. Sometimes it might not find a file (if it doesn't match via some logic flaw) or you might not have named a file correctly so it won't work 100% but 95% is better than none right?
-- When you click the button and it populates, it won't hide the button until you click off and back on. Never figured out how to solve that lol
 - When Narrative releases an update, sadly you will have to reapply this. It only takes 5 minutes once you've done it a few times.
+
+## Bugs
+- I haven't yet figured out how to render the button in the same place on both NPC and Player dialogue nodes
+- When you click the button and it populates, it won't hide the button until you click off and back on. Never figured out how to solve that lol
 
 ## How it works - top level
 
@@ -126,7 +131,7 @@ If all your sounds start with something, maybe the speaker ID, maybe some emotio
  
  
 ### CleanString
-This method takes the text from your node and cleans it up removing anything that won't work in a file path. E.g. spaces.
+This method takes the text from your node and cleans it up removing anything that is not an alpha num character. [a-z] [0-9] are kept.
 
 It also has an optional parameter of maxCharacters. In order to restrict how much it has to query, while it builds up the cleaned string, it will return the max length. Typically, having a huge file name is a bad thing as it will cause issues cross OSs. You can set this max length to anything you want to suit your project. 25 is typically a good balance between dialogue.
 
@@ -139,15 +144,13 @@ Hello and welcome to this year's Mortal Kombat tournament! We hope you enjoy. At
 Would become:
 
 ```
-Hello_and_welcome_to_this_years_Mortal_Kombat_tournament__We_hope_you_enjoy__At_least_we_hope_you_do_
+helloandwelcometothisyearsmortalkombattournamentwehopeyouenjoyatleastwehopeyoudo
 ```
 or with max length of 25:
 
 ```
-Hello_and_welcome_to_thi
+helloandwelcometothisyea
 ```
-
-But its just as easy to edit to remove all non [a-z] characters and replace spaces with underscores.
 
 ### Speaker ID path
 One of the steps this mod takes to help speed up and return accurate dialogue is it uses the Speaker ID of your node (Player is used for Player nodes)
@@ -165,7 +168,7 @@ would not work.
 It would have to have the Speaker id in the folder structure:
 
 ```
-/Game/Sounds/SPEAKER_ID/hello_and_welcome_to_my_game.wav
+/Game/Sounds/SPEAKERID/hello_and_welcome_to_my_game.wav
 ```
 ```
 /Game/Sounds/Player/hello_and_welcome_to_my_game.wav

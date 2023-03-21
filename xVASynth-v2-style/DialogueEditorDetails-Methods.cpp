@@ -77,26 +77,23 @@ FReply FDialogueEditorDetails::TryToFindSound()
             USoundBase* sound = Cast<USoundBase>(asset);
             FString SoundPath = asset->GetPathName();
 
-            // check what we found is a sound file and our speaker id exists in the path
 //            UE_LOG(LogTemp, Log, TEXT("Path: %s and speakerID: %s"), *SoundPath, *cleanSpeakerID);
 
+            // check what we found is a sound file and our speaker id exists in the path
             if (sound != nullptr && SoundPath.Contains(*cleanSpeakerID))
             {
                 // store the sound name
                 FString soundName = *sound->GetName();
 
-//              UE_LOG(LogTemp, Log, TEXT("SOUND: %s, IN DIR: %s"), *soundName, *SoundPath);
-
                 soundName = SplitFilename(*soundName);
 
-                // did it return a sound name?
-                if (soundName != "") {
-                    // substring 25 characters from sound name
-                    soundName = soundName.LeftChop(soundName.Len() - 25);
+                // clean sound name
+                soundName = CleanString(soundName, 25);
 
-                    if (soundName == cleanSpeakerText) {
-                        MatchingSounds.Add(asset);
-                    }
+//                UE_LOG(LogTemp, Log, TEXT("SOUND: %s, IN DIR: %s"), *soundName, *SoundPath);
+
+                if (soundName == cleanSpeakerText) {
+                    MatchingSounds.Add(asset);
                 }
             }
         }
@@ -105,11 +102,11 @@ FReply FDialogueEditorDetails::TryToFindSound()
         if (MatchingSounds.Num() == 0) {
             UE_LOG(LogTemp, Error, TEXT("No audio found: %s"), *cleanSpeakerText);
         }
-        // more than 1 audio meets the criteria
+            // more than 1 audio meets the criteria
         else if (MatchingSounds.Num() > 1) {
             UE_LOG(LogTemp, Error, TEXT("%d results returned with name: %s"), MatchingSounds.Num(), *cleanSpeakerText);
         }
-        // perfect
+            // perfect
         else
         {
             USoundBase* sound = Cast<USoundBase>(MatchingSounds[0]);
@@ -132,7 +129,7 @@ FReply FDialogueEditorDetails::TryToFindSound()
     return FReply::Handled();
 }
 
-// clean the string removing all alpha num characters and replacing spaces with underscores. Option to have max chars too
+// clean the string removing all alpha num characters
 FString FDialogueEditorDetails::CleanString(const FString& InString, const int maxCharacters)
 {
     FString CleanedString = "";
@@ -144,16 +141,13 @@ FString FDialogueEditorDetails::CleanString(const FString& InString, const int m
         {
             CleanedString.AppendChar(Char);
         }
-        else if (Char == ' ' || Char == '_' || Char == ',' || Char == '\'' || Char == '!' || Char == '?' || Char == '.')
-        {
-            CleanedString.AppendChar('_');
-        }
 
         // if we have max characters and we hit the limit
         if (maxCharacters > 0 && CleanedString.Len() == maxCharacters)
             break;
     }
 
+    CleanedString.ToLowerInline();
     return CleanedString;
 }
 

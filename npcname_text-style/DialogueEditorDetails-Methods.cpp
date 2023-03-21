@@ -77,7 +77,6 @@ FReply FDialogueEditorDetails::TryToFindSound()
             USoundBase* sound = Cast<USoundBase>(asset);
             FString SoundPath = asset->GetPathName();
 
-            // check what we found is a sound file and our speaker id exists in the path
 //            UE_LOG(LogTemp, Log, TEXT("Path: %s and speakerID: %s"), *SoundPath, *cleanSpeakerID);
 
             if (sound != nullptr && SoundPath.Contains(*cleanSpeakerID))
@@ -85,10 +84,10 @@ FReply FDialogueEditorDetails::TryToFindSound()
                 // store the sound name
                 FString soundName = *sound->GetName();
 
-//              UE_LOG(LogTemp, Log, TEXT("SOUND: %s, IN DIR: %s"), *soundName, *SoundPath);
+                // clean sound name
+                soundName = CleanString(soundName, 25);
 
-		        // substring 25 characters from sound name
-		        soundName = soundName.LeftChop(soundName.Len() - 25);
+//                UE_LOG(LogTemp, Log, TEXT("SOUND: %s, IN DIR: %s"), *soundName, *SoundPath);
 
 		        if (soundName == cleanSpeakerText) {
 		            MatchingSounds.Add(asset);
@@ -127,7 +126,7 @@ FReply FDialogueEditorDetails::TryToFindSound()
     return FReply::Handled();
 }
 
-// clean the string removing all alpha num characters and replacing spaces with underscores. Option to have max chars too
+// clean the string removing all alpha num characters
 FString FDialogueEditorDetails::CleanString(const FString& InString, const int maxCharacters)
 {
     FString CleanedString = "";
@@ -135,7 +134,7 @@ FString FDialogueEditorDetails::CleanString(const FString& InString, const int m
     for (int32 i = 0; i < InString.Len(); i++)
     {
         const TCHAR Char = InString[i];
-        if (FChar::IsAlnum(Char) || Char == '_')
+        if (FChar::IsAlnum(Char))
         {
             CleanedString.AppendChar(Char);
         }
@@ -145,5 +144,6 @@ FString FDialogueEditorDetails::CleanString(const FString& InString, const int m
             break;
     }
 
+    CleanedString.ToLowerInline();
     return CleanedString;
 }
