@@ -12,7 +12,8 @@ It might not sound much but when you are looking at 50+ nodes you need to add so
 ## Example
 In these two examples, you can see the before and after. The before is manually searching for files and the after is simply clicking the button. 
 
-![YouTube - before and after](https://youtu.be/Szz77n-nG4M)
+YouTube - before and after:
+https://youtu.be/Szz77n-nG4M
 
 Before:
 ![narrative_mod_before](https://user-images.githubusercontent.com/48034534/226448774-d0b469e7-c09d-4cf7-b29b-8a8497361e41.gif)
