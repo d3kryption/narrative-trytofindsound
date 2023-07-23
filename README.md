@@ -1,5 +1,5 @@
 # Narrative - Try to find sound button
-This is a mod for Narrative (by Reubs) that adds a button to the dialogue node details panel that when clicked, will get the text of the selected node, and strips any non alphanum character, then tries to find the file similarly named within /Game/Sounds.
+This is a mod for Narrative 3 (by Reubs) that adds a button to the dialogue node details panel that when clicked, will get the text of the selected node, and strips any non alphanum character, then tries to find the file similarly named within your specfied sounds folder. Default is: `/Game/Sounds`.
 
 ## Why?
 
@@ -23,7 +23,7 @@ After - as you can see it's super quick in comparison:
 
 
 ## ⚠️ Warning
-This is not a warning. If you've never touched C++ before don't worry. This guide aims to guide you step by step to do it. It's a good mod and lack of knowledge shouldn't be a barrier.
+ If you've never touched C++ before don't worry. This guide aims to guide you step by step to do it. It's a good mod and lack of knowledge shouldn't be a barrier.
 
 Even if you add this mod and it breaks your Narrative, just redownload it and it'll all be gone. I'm always happy for you to contact me if you need help.
 
@@ -36,7 +36,12 @@ Back it up. Please.
 - Customisable to your naming convention - pick your style or make your own to match your standards
 - Quick - it contains a few checks to try and speed up the search
 - If you have Narrative working, this mod will work for you and you will love it.
-- The button hides if the dialogue already has been populated (you can remove this if you don't want this aspect, I show this during installation)
+- Customisable settings. Edit -> Project Settings -> Narrative Dialogue - Editor:
+	- Pick your folder location to search
+	- Sound search pattern
+	- Max text length to search
+	- What it replaces with
+	- What the player folder is called
 
 ## Limitations
 - You need to own Narrative. If you don't this is useless to you - sorry but...how did you get here lol
@@ -47,150 +52,74 @@ Back it up. Please.
 
 ## Bugs
 - I haven't yet figured out how to render the button in the same place on both NPC and Player dialogue nodes
-- When you click the button and it populates, it won't hide the button until you click off and back on. Never figured out how to solve that lol
 
 ## How it works - top level
-
+1) When the user clicks the button it checks to make sure you only have a single node selected
+2) It then sets some bits up, but mainly checks if the node is a type of NPC or Player
+3) It cleans up the speaker ID and text (replacing / removing chars, trimming etc...)
+4) It then loops through all assets in your path making sure to only check SOUND files
+5) It checks that the path contains the sound folder location and if the sound file name contains the stripped down text
+6) If it only finds a single sound file, it applies it to the dialogue. If it finds multiple or none, it errors (output log)
 
 ## 🛠️ Installation Steps
-
 I cannot distribute Narrative as it's a licenced product created by Reubs, but with his permission, I have posted the modifications only here so you can make the changes you need.
 
-Now you need to pick your "style".
+### File 1 - `Source/NarrativeDialogueEditor/Private/DialogueEditorDetails.h`
 
-A style in this guide is referred to as how you organises your files.
+1) Open the file `DialogueEditorDetails.h` from this repo and copy the 4lines from the file `DialogueEditorDetails.h` into your Narrative `DialogueEditorDetails.h` file. 
 
-If you stick every single sound from your entire game into `/Game/Sounds/` - please change it :P 
+Paste it inside the class `FDialogueEditorDetails` near the bottom.
 
-If you can't find your style here and you can logically explain it, I can try and help set you up but you'll need to explain it. 
-
-`I randomly pick what I replace each character with and I change between naming it the npcs name and text to random guids that have nothing to do with the text` - sorry I can't help :P
-
-### Style 1 - xVASynth v2
-If you use xVASynth v2 and use its default exporting style:
-```
-/Game/Sounds/aivoice/ai_codec_text
-```
-
-e.g.
-
-```
-/Game/Sounds/GeneralButtlicker/duke_nukem_hifi_You_stole_from_the_wrong_person__Time_to_die
-```
-
-Then pick this style. Download this repo and go into the `xVASynth-v2-style` folder and follow the steps in the README.md (open in notepad or anything)
-
-### Style 2 - NPCName/text
-If you create a folder per NPC and set the filename of the sound to be a stripped version of the text, this style is for you.
-```
-/Game/Sounds/aivoice/text
-```
-
-e.g.
-
-```
-/Game/Sounds/GeneralButtlicker/You_stole_from_the_wrong_person_Time_to_die
-```
-
-Then pick this style. Download this repo and go into the `npcname_text-style` folder and follow the steps in the README.md (open in notepad or anything)
+![image](https://user-images.githubusercontent.com/48034534/226450601-b8ac6327-c727-4bf4-a424-02aa51edb600.png)
 
 
-### Help with new style
+### File 2 - `Source/NarrativeDialogueEditor/Private/DialogueEditorDetails.cpp`
 
-If the styles above don't work for your needs and you can logically explain your organisation then download the style that looks as close to yours and then modify it.
+1) Open the file `DialogueEditorDetails-Methods.cpp` from this repo and copy the includes from the top.
 
-### SplitFilename
-The export convention for xVASynth by default is:
+2) Open the Narrative file `DialogueEditorDetails.cpp` and paste the includes at the very top just below the other includes.
 
-```
-ai_name_codec_text
-```
+3) Open the file `DialogueEditorDetails-Methods.cpp` again from this repo and copy the methods below the includes.
 
-E.g.
-
-```
-duke_nukem_hifi_You_stole_from_the_wrong_person__Time_to_die
-```
-
-This method splits on `hifi_` and keeps the text.
-
-If you begin any of your sound files with a naming convention, modify this to split it so only the text exists.
-
-e.g.
-
-```
-duke_nukem_hifi_You_stole_from_the_wrong_person__Time_to_die
-```
-
-will become
-
-```
-You_stole_from_the_wrong_person__Time_to_die
-```
-
-If all your sounds start with something, maybe the speaker ID, maybe some emotion type, anything, and you can split on it, try to adapt this method and its call.
- 
- 
-### CleanString
-This method takes the text from your node and cleans it up removing anything that is not an alpha num character. [a-z] [0-9] are kept.
-
-It also has an optional parameter of maxCharacters. In order to restrict how much it has to query, while it builds up the cleaned string, it will return the max length. Typically, having a huge file name is a bad thing as it will cause issues cross OSs. You can set this max length to anything you want to suit your project. 25 is typically a good balance between dialogue.
-
-This will entirely depend on how you name your files. In my case, I built it using xVASynth and tried to cater for those random underscore additions lol
-
-```
-Hello and welcome to this year's Mortal Kombat tournament! We hope you enjoy. At least we hope you do?
-```
-
-Would become:
-
-```
-helloandwelcometothisyearsmortalkombattournamentwehopeyouenjoyatleastwehopeyoudo
-```
-or with max length of 25:
-
-```
-helloandwelcometothisyea
-```
-
-### Speaker ID path
-One of the steps this mod takes to help speed up and return accurate dialogue is it uses the Speaker ID of your node (Player is used for Player nodes)
-and checks if the path of the sound contains the speaker id (stripped of spaces and such).
-
-For example
-A path of:
-
-```
-/Game/Sounds/hello_and_welcome_to_my_game.wav
-```
-
-would not work.
-
-It would have to have the Speaker id in the folder structure:
-
-```
-/Game/Sounds/SPEAKERID/hello_and_welcome_to_my_game.wav
-```
-```
-/Game/Sounds/Player/hello_and_welcome_to_my_game.wav
-```
-
-If you do not want this feature, you can modify the line:
-
+4) Open the Narrative file `DialogueEditorDetails.cpp` and paste the methods at the very bottom. Just above the line 
 ```cpp
-if (sound != nullptr && SoundPath.Contains(*cleanSpeakerID))
+#undef LOCTEXT_NAMESPACE
 ```
 
-To instead be:
+![image](https://user-images.githubusercontent.com/48034534/226450506-afa2abe7-cfb8-4d49-b40d-f0bffaf11f6f.png)
 
-```cpp
-if (sound != nullptr)
-```
 
-and remove the line:
+2) In the file `DialogueEditorDetails-NPC.cpp` on this repo, copy the lines.
 
-```cpp
-FString SoundPath = asset->GetPathName();
-```
+Open the Narrative file `DialogueEditorDetails.cpp` and find the method `FDialogueEditorDetails::CustomizeDetails`.
 
-Just above it.
+This method is used to customise the details panel to add buttons etc...
+
+Scroll to the bottom of this function (around line 150 as per the time of writing) you will see it adds a button with the text being `.Text(this, &FDialogueEditorDetails::GetSpeakerText)`.
+
+Then there are two square braces. Paste it under this line.
+
+![image](https://user-images.githubusercontent.com/48034534/226450768-5b25a5db-3101-48a9-862b-b578e3954bfe.png)
+
+
+3) In the file `DialogueEditorDetails-PLAYER.cpp` on this repo, copy all the lines - there are quite a few don't worry. It just copies the NPC code above but is modified for the player.
+
+Under the if statement or code you pasted in step 2, there should be roughly 5 brackets.
+
+Paste the code in between the 3rd ending bracket and the fourth. Making sure there are two ending brackets below, and 3 above your code.
+
+If done correctly, the code should look like so:
+
+![image](https://user-images.githubusercontent.com/48034534/226451108-73d8bf7f-d7b5-4ab5-b381-ba9b0b403ef2.png)
+
+### File 3 - `Source/NarrativeDialogueEditor/Private/DialogueEditorSettings.h`
+
+1) Open the file `DialogueEditorSettings.h` from this repo and copy the lines.
+
+2) Open the Narrative file `DialogueEditorSettings.h` and paste the lines from this repo above the `UPROPERTY` for the `bEnableWarnings` variable.
+
+### File 4 - `Source/NarrativeDialogueEditor/Private/DialogueEditorSettings.cpp`
+
+1) Open the file `DialogueEditorSettings.cpp` from this repo and copy the lines.
+
+2) Open the Narrative file `DialogueEditorSettings.cpp` and paste the lines from this repo below the `DefaultDialogueClass` line.
