@@ -64,26 +64,38 @@ FReply FDialogueEditorDetails::TryToFindSoundChildren()
 	{
         if (UDialogueNode* node = Cast<UDialogueNode>(EditedObjects[0].Get()))
         {
-        	TryToFindSoundOnNodes(*node);
+        	// Create a set to track visited nodes
+        	TSet<const UDialogueNode*> VisitedNodes;
+        	
+        	TryToFindSoundOnNodes(*node, VisitedNodes);
         }
 	}
     return FReply::Handled();
 }
 
 // Loop over all connected nodes and call TryToFindSound
-void FDialogueEditorDetails::TryToFindSoundOnNodes(const UDialogueNode& node)
+void FDialogueEditorDetails::TryToFindSoundOnNodes(const UDialogueNode& node, TSet<const UDialogueNode*>& VisitedNodes)
 {
+	// Check if this node has already been visited
+	if (VisitedNodes.Contains(&node))
+	{
+		return;  // Avoid infinite loop
+	}
+
+	// Mark this node as visited
+	VisitedNodes.Add(&node);
+	
 	for (UDialogueNode* NPCReply : node.NPCReplies)
 	{
 		TryToFindSound(*NPCReply);
-		TryToFindSoundOnNodes(*NPCReply);
+		TryToFindSoundOnNodes(*NPCReply, VisitedNodes);
 	}
 
 	// Loop over PlayerReplies and call this function recursively
 	for (UDialogueNode* PlayerReply : node.PlayerReplies)
 	{
 		TryToFindSound(*PlayerReply);
-		TryToFindSoundOnNodes(*PlayerReply);
+		TryToFindSoundOnNodes(*PlayerReply, VisitedNodes);
 	}
 }
 
