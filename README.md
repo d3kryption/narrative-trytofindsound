@@ -1,5 +1,5 @@
 # Narrative - Try to find sound button
-This is a mod for Narrative 3 (by Reubs) that adds a button to the dialogue node details panel that when clicked, will get the text of the selected node, and strips any non alphanum character, then tries to find the file similarly named within your specfied sounds folder. Default is: `/Game/Sounds`.
+This is a mod for Narrative 3 (by Reubs) that adds two buttons to the dialogue node details panel that when clicked, will get the text of the selected node (or loop over all connected nodes), and strips any non alphanum character, then tries to find the file similarly named within your specfied sounds folder. Default is: `/Game/Sounds`.
 
 ## Why?
 
